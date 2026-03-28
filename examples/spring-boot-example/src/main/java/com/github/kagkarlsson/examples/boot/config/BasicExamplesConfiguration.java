@@ -34,7 +34,7 @@ public class BasicExamplesConfiguration {
   public static final TaskDescriptor<Void> BASIC_ONE_TIME_TASK =
       TaskDescriptor.of("sample-one-time-task");
   public static final TaskDescriptor<Void> BASIC_RECURRING_TASK =
-      TaskDescriptor.of("recurring-sample-task");
+      TaskDescriptor.of("recurring-sample-task-1");
   private static final Logger log = LoggerFactory.getLogger(BasicExamplesConfiguration.class);
   private static int ID = 1;
 
