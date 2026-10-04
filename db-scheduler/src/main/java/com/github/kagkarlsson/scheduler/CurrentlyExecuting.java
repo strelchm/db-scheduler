@@ -26,6 +26,7 @@ public class CurrentlyExecuting {
   private final Instant startTime;
   private final HeartbeatState heartbeatState;
   private final Thread currentThread;
+  private boolean longRunningWarningLogged;
 
   public CurrentlyExecuting(
       Execution execution, Clock clock, HeartbeatConfig heartbeatConfig, Thread currentThread) {
@@ -58,5 +59,13 @@ public class CurrentlyExecuting {
 
   public void heartbeat(boolean successful, Instant now) {
     heartbeatState.heartbeat(successful, now);
+  }
+
+  boolean markLongRunningWarningLogged() {
+    if (longRunningWarningLogged) {
+      return false;
+    }
+    longRunningWarningLogged = true;
+    return true;
   }
 }

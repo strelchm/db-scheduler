@@ -467,19 +467,20 @@ public class Scheduler implements SchedulerClient {
       return;
     }
 
-    LOG.debug("Logging {} long-running executions being processed.", longRunningExecutions.size());
-    longRunningExecutions.forEach(
-        execution -> {
-          LOG.warn(
-              "Execution with {} is long-running (execution time: {}). If this message is a false positive and the task is genuinely long-running, try increasing longRunningExecutionsLoggingThreshold or disabling logLongRunningExecutions. Current thread stacktrace: {}",
-              execution.getExecution().taskInstance,
-              execution.getDuration(),
-              Arrays.stream(execution.getCurrentThread().getStackTrace())
-                  .map(StackTraceElement::toString)
-                  .collect(
-                      Collectors.joining(
-                          STACK_TRACE_ELEMENT_INDENT, STACK_TRACE_ELEMENT_INDENT, "")));
-        });
+    longRunningExecutions.stream()
+        .filter(CurrentlyExecuting::markLongRunningWarningLogged)
+        .forEach(
+            execution -> {
+              LOG.warn(
+                  "Execution with {} is long-running (execution time: {}). If this message is a false positive and the task is genuinely long-running, try increasing longRunningExecutionsLoggingThreshold or disabling logLongRunningExecutions. Current thread stacktrace: {}",
+                  execution.getExecution().taskInstance,
+                  execution.getDuration(),
+                  Arrays.stream(execution.getCurrentThread().getStackTrace())
+                      .map(StackTraceElement::toString)
+                      .collect(
+                          Collectors.joining(
+                              STACK_TRACE_ELEMENT_INDENT, STACK_TRACE_ELEMENT_INDENT, "")));
+            });
     schedulerListeners.onSchedulerEvent(SchedulerEventType.RAN_LOG_LONG_RUNNING_EXECUTIONS);
   }
 
